@@ -73,25 +73,95 @@ select * from Student where S in (select distinct S from SC);
 
 4. 查询所有同学的学生编号、学生姓名、选课总数、所有课程的总成绩(没成绩的显示为 null )
 
+select stu.S,stu.Sname,A.总成绩,A.选课总数 from student stu
+left join (select S,COUNT(*) as '选课总数',SUM(score) as '总成绩' from SC group by S) A on stu.S = A.S;
+
 4.1 查有成绩的学生信息
+
+select * from student where S in (select distinct S from SC);
 
 5. 查询「李」姓老师的数量 
 
+select COUNT(*) as 数量 from teacher where Tname like "李%";
+
 6. 查询学过「张三」老师授课的同学的信息 
 
+select student.* from student ,SC where SC.S = student.S and SC.C
+in
+(
+select Course.C from Course,Teacher where Course.T = Teacher.T and Teacher.Tname = '张三'
+);
+
+select * from Student
+where S in(select distinct S from SC
+where C=(select C from Course
+where T=(select T from Teacher where Tname='张三')))
+
+
 7. 查询没有学全所有课程的同学的信息 
+select student.*,IFNULL(A.num,0) as num from student left join (select S,COUNT(*) as num from SC group by S) A on A.S = student.S ;
+
+select student.*,IFNULL(A.num,0) as num from student left join (select S,COUNT(*) as num from SC group by S) A on A.S = student.S having
+num <>
+(
+select COUNT(*) from Course
+);
+
+select student.* from student right join
+(select S,IFNULL(COUNT(*),0 ) as num from SC group by S having num < 3) A on A.S = student.S;
+
+select * from Student where S in(select S from SC group by S having COUNT(C)<3);
 
 8. 查询至少有一门课与学号为" 01 "的同学所学相同的同学的信息 
 
+select student.* from student where student.S
+in
+(
+select distinct S from SC where S <> '01' and C
+in
+(
+select C from SC where S = '01'
+)
+);
+
 9. 查询和" 01 "号的同学学习的课程完全相同的其他同学的信息 
 
+select S from SC where S not in
+(
+select S from SC where C
+not in
+(
+select C from SC where S = '01'
+)
+)
+group by S
+having COUNT(*) = (select COUNT(*) from SC where S = '01') and S <> '01';
+
 10. 查询没学过"张三"老师讲授的任一门课程的学生姓名 
+select Sname FROM student where S not in
+(
+select distinct S from SC where C in
+(
+select C  from course ,teacher where Tname = '张三' and course.T = teacher.T
+)
+);
 
 11. 查询两门及其以上不及格课程的同学的学号，姓名及其平均成绩 
 
+select sc.S,avg(score),student.Sname from sc left join student on sc.S = student.S group by S,Sname
+having SUM(IF(score < 60,1,0) > 1);
+
 12. 检索" 01 "课程分数小于 60，按分数降序排列的学生信息
 
+SELECT student.*  FROM SC ,student WHERE score < 60 and C = '01' and sc.s = student.s order by score desc;
+
 13. 按平均成绩从高到低显示所有学生的所有课程的成绩以及平均成绩
+
+select S,min(case C when '01' then score else 0 end)'01',
+min(case C when '02' then score else 0 end)'02',
+min(case C when '03' then score else 0 end)'03',AVG(score)平均分 from SC
+group by S order by 平均分 desc;
+
 
 14. 查询各科成绩最高分、最低分和平均分：
 
