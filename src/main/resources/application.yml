@@ -59,6 +59,7 @@ server:
   tomcat:
     max-threads: 200
 
+
 mybatis:
   # mybatis配置文件所在路径
   config-location: classpath:mybatis/mybatis.cfg.xml
@@ -75,4 +76,11 @@ management:
   health:
     defaults:
       enabled: true
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false
+    fetch-registry: false
 
