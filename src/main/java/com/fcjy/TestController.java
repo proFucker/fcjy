@@ -1,7 +1,7 @@
 package com.fcjy;
 
 import com.alibaba.druid.pool.DruidPooledConnection;
-import com.fcjy.mybatis.dao.TeacherDao;
+//import com.fcjy.mybatis.dao.TeacherDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
@@ -49,14 +49,14 @@ public class TestController {
         return "test end";
     }
 
-    @Resource
-    TeacherDao teacherDao;
-
-    @RequestMapping("/mybatis")
-    @ResponseBody
-    public String mybatis() throws ServletException {
-        return teacherDao.findAll().toString();
-    }
+//    @Resource
+//    TeacherDao teacherDao;
+//
+//    @RequestMapping("/mybatis")
+//    @ResponseBody
+//    public String mybatis() throws ServletException {
+//        return teacherDao.findAll().toString();
+//    }
 
     @Bean
     public String bea(){
