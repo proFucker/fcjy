@@ -40,4 +40,11 @@ insert into SC values('07' , '02' , 89);
 insert into SC values('07' , '03' , 98);
 
 
+create table XXX
+(
+    id char(10) not null,
+    price DECIMAL(8,2) not null,
+    desc VARCHAR(1000) null
+)
+
 
